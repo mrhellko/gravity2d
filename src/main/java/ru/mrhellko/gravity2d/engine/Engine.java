@@ -13,8 +13,8 @@ public class Engine implements Runnable {
     private int countsPerFrameReal = 0;
     private List<Body> bodyList = new ArrayList<>();
     private double time = 0;
-    final Object lock = new Object();
-    boolean isFinishedCalc = false;
+    private final Object lock = new Object();
+    private boolean isFinishedCalc = false;
 
     public double getTime() {
         return time;

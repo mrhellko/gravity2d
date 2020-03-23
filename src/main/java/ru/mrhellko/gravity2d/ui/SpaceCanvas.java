@@ -7,11 +7,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.awt.geom.AffineTransform;
+
 
 public class SpaceCanvas extends JPanel implements MouseWheelListener {
     private Form formController;
     private ZoomSettings zoomSettings;
-    Engine engine;
+    private Engine engine;
+    private AffineTransform at;
+    private int xPointLocationZoom;
+    private int yPointLocationZoom;
 
     SpaceCanvas(Form formController, ZoomSettings zoomSettings, Engine engine) {
         this.formController = formController;
@@ -47,12 +52,13 @@ public class SpaceCanvas extends JPanel implements MouseWheelListener {
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
+        xPointLocationZoom = e.getX();
+        yPointLocationZoom = e.getY();
         if (e.getWheelRotation() < 0) {
-            zoomSettings.setScaleX(zoomSettings.getScaleX() * 2);
-            zoomSettings.setScaleY(zoomSettings.getScaleY() * 2);
+            zoomSettings.setZoomFactor(zoomSettings.getZoomFactor() * 2);
         } else {
-            zoomSettings.setScaleX(zoomSettings.getScaleX() / 2);
-            zoomSettings.setScaleY(zoomSettings.getScaleY() / 2);
+            zoomSettings.setZoomFactor(zoomSettings.getZoomFactor() / 2);
         }
     }
+
 }

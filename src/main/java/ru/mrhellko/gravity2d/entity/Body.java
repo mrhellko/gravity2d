@@ -17,7 +17,7 @@ public class Body {
     private Color color;
 
     public void render(SpaceCanvas canvas, ZoomSettings zoom, Graphics graphics) {
-        int R = 10;
+        int R = 20;
         graphics.setColor(color);
         graphics.fillOval(zoom.getX(x) - R/2, zoom.getY(y) - R/2, R, R);
     }
