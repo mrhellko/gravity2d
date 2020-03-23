@@ -6,6 +6,22 @@ public class ZoomSettings {
     private int scaleX = 100;
     private int scaleY = 100;
 
+    public int getScaleX() {
+        return scaleX;
+    }
+
+    public void setScaleX(int scaleX) {
+        this.scaleX = scaleX;
+    }
+
+    public int getScaleY() {
+        return scaleY;
+    }
+
+    public void setScaleY(int scaleY) {
+        this.scaleY = scaleY;
+    }
+
     public int getX(double x) {
         return (int) (x * scaleX / cellX);
     }
