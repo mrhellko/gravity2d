@@ -1,5 +1,10 @@
 package ru.mrhellko.gravity2d.entity;
 
+import ru.mrhellko.gravity2d.engine.ZoomSettings;
+import ru.mrhellko.gravity2d.ui.SpaceCanvas;
+
+import java.awt.*;
+
 public class Body {
     private double x;
     private double y;
@@ -8,7 +13,13 @@ public class Body {
     private double Fx;
     private double Fy;
     private double m;
+    private String title;
+    private Color color;
 
+    public void render(SpaceCanvas canvas, ZoomSettings zoom, Graphics graphics) {
+        graphics.setColor(color);
+        graphics.fillOval(zoom.getX(x), zoom.getY(y), 20, 20);
+    }
 
     public void setNewValues(double x, double y, double vx, double vy, double Fx, double Fy) {
         this.x = x;
@@ -17,16 +28,6 @@ public class Body {
         this.vy = vy;
         this.Fx = Fx;
         this.Fy = Fy;
-    }
-
-    public double signX(Body other) {
-        if(other.x > x) return 1.0;
-        else return -1.0;
-    }
-
-    public double signY(Body other) {
-        if(other.y > y) return 1.0;
-        else return -1.0;
     }
 
     public double getFx() {
@@ -60,12 +61,31 @@ public class Body {
         return (x - other.x) * (x - other.x) + (y - other.y) * (y - other.y);
     }
 
+    public Body(double x, double y, double vx, double vy, double m, String title, Color color) {
+        this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+        this.m = m;
+        this.title = title;
+        this.color = color;
+    }
+
     public Body(double x, double y, double vx, double vy, double m) {
         this.x = x;
         this.y = y;
         this.vx = vx;
         this.vy = vy;
         this.m = m;
+        this.title = "";
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public double getX() {
