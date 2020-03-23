@@ -51,19 +51,21 @@ public class Engine implements Runnable {
     private void process() {
         time += deltaT;
         for(Body current : bodyList) {
+            double Fx = 0;
+            double Fy = 0;
             for(Body body : bodyList) {
                 if(body.equals(current)) continue;
-                gravity(current, body);
+                double r = current.distanceFrom(body);
+                double r2 = current.squareDistanceFrom(body);
+                double F = G * current.getM() * body.getM() / r2;
+                Fx += F * current.deltaX(body) / r;
+                Fy += F * current.deltaY(body) / r;
             }
+            gravity(current, Fx, Fy);
         }
     }
 
-    private void gravity(Body current, Body body) {
-        double r = current.distanceFrom(body);
-        double r2 = current.squareDistanceFrom(body);
-        double F = G * current.getM() * body.getM() / r2;
-        double Fx = F * current.deltaX(body) / r;
-        double Fy = F * current.deltaY(body) / r;
+    private void gravity(Body current, double Fx, double Fy) {
         double ax = Fx / current.getM();
         double ay = Fy / current.getM();
         double vx = current.getVx() + ax * deltaT;
@@ -92,13 +94,11 @@ public class Engine implements Runnable {
 
     double a = Math.pow(10, 0.125);
     public void setCountsPerFrame(int countsPerFramePlan) {
-//        this.countsPerFramePlan = (int) Math.exp(countsPerFramePlan);
         if (countsPerFramePlan == 0) {
             this.countsPerFramePlan = 0;
         } else {
             this.countsPerFramePlan = (int) Math.pow(a, countsPerFramePlan);
         }
-//        this.countsPerFramePlan = countsPerFramePlan;
     }
 
     public void updateRealCounts() {

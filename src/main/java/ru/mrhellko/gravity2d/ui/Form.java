@@ -58,8 +58,6 @@ public class Form extends JFrame {
         bottomPanel.add(countPerFrameLabel);
         bottomPanel.add(speedSlider);
         bottomPanel.add(precisionSlider);
-//        add(timeLabel, BorderLayout.AFTER_LAST_LINE);
-//        add(speedSlider, BorderLayout.AFTER_LAST_LINE);
         add(bottomPanel, BorderLayout.SOUTH);
         setTitle("Planets");
         setVisible(true);
@@ -67,8 +65,9 @@ public class Form extends JFrame {
 
     private void initApplication() {
         engine = new Engine();
-        engine.addBody(new Body(0, 0, 0, 0, 1.9885E30, "Sun", new Color(255, 0, 0)));
-        engine.addBody(new Body(149_597_868_000.0, 0, 0, 29783 * 1.2, 5.97E24, "Earth", new Color(58, 138, 53)));
+        engine.addBody(new Body(0, 0, 0, -(5.97E24*29783+(29783-1023.0)*7.3477E22)/1.9885E30, 1.9885E30, "Sun", new Color(255, 0, 0)));
+        engine.addBody(new Body(149_597_868_000.0, 0, 0, 29783, 5.97E24, "Earth", new Color(58, 138, 53)));
+        engine.addBody(new Body(149_597_868_000.0, 384_401_000.0, -1023, 29783, 7.3477E22, "Moon", new Color(58, 123, 234)));
         engine.setDeltaT(1.0 / precisionSlider.getValue());
         double value = speedSlider.getValue() / 1.0 / SLIDER_SCALE;
         engine.setCountsPerFrame((int) value);
@@ -80,11 +79,11 @@ public class Form extends JFrame {
         render(canvas, zoomSettings, g);
         double time = engine.getTime();
         timeLabel.setText(String.format("%6d years %03d days %02d hours %02d min %02d sec",
-                (int)(time / 3600.0 / 24.0 / 365),
-                (int)(time / 3600.0 / 24.0) % (365),
-                (int)(time / 3600.0) % 24,
+                (int)(time / 3600 / 24 / 365),
+                (int)(time / 3600 / 24) % 365,
+                (int)(time / 3600) % 24,
                 (int)(time / 60) % 60,
-                (int)time % 60
+                (int)(time) % 60
         ));
         countPerFrameLabel.setText(String.format(" Counts per frame: %20d", engine.getCountsPerFrame()));
     }
