@@ -1,5 +1,6 @@
 package ru.mrhellko.gravity2d.ui;
 
+import ru.mrhellko.gravity2d.engine.Engine;
 import ru.mrhellko.gravity2d.engine.ZoomSettings;
 
 import javax.swing.*;
@@ -10,10 +11,12 @@ import java.awt.event.MouseWheelListener;
 public class SpaceCanvas extends JPanel implements MouseWheelListener {
     private Form formController;
     private ZoomSettings zoomSettings;
+    Engine engine;
 
-    SpaceCanvas(Form formController, ZoomSettings zoomSettings) {
+    SpaceCanvas(Form formController, ZoomSettings zoomSettings, Engine engine) {
         this.formController = formController;
         this.zoomSettings = zoomSettings;
+        this.engine = engine;
         addMouseWheelListener(this);
     }
 
@@ -23,6 +26,7 @@ public class SpaceCanvas extends JPanel implements MouseWheelListener {
         g.translate(getWidth() / 2, getHeight() / 2);
         paintGrid(g);
         formController.onDrawFrame(this, zoomSettings, g);
+        engine.updateRealCounts();
         try {
             Thread.sleep(16);
         } catch (InterruptedException e) {

@@ -1,17 +1,22 @@
 package ru.mrhellko.gravity2d.engine;
 
 import ru.mrhellko.gravity2d.entity.Body;
+import ru.mrhellko.gravity2d.ui.Form;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Engine implements Runnable {
     private static double G = 6.67E-11;
-    private long deltaT;
+    private double deltaT;
+    private int countsPerFramePlan = Form.COUNTS_PER_FRAME_MAX;
+    private int countsPerFrameReal = 0;
     private List<Body> bodyList = new ArrayList<>();
-    private long time = 0;
+    private double time = 0;
+    final Object lock = new Object();
+    boolean isFinishedCalc = false;
 
-    public long getTime() {
+    public double getTime() {
         return time;
     }
 
@@ -24,9 +29,22 @@ public class Engine implements Runnable {
     }
 
 
-    private void startSimulation(long deltaT) {
-        while(true) {
-            process();
+    private void startSimulation() {
+        while (true) {
+            if (isFinishedCalc) {
+                synchronized (lock) {
+                    try {
+                        lock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            while (countsPerFrameReal < countsPerFramePlan) {
+                process();
+                countsPerFrameReal++;
+                isFinishedCalc = true;
+            }
         }
     }
 
@@ -57,14 +75,37 @@ public class Engine implements Runnable {
 
     @Override
     public void run() {
-        startSimulation(deltaT);
+        startSimulation();
     }
 
-    public long getDeltaT() {
+    public double getDeltaT() {
         return deltaT;
     }
 
-    public void setDeltaT(long deltaT) {
+    public void setDeltaT(double deltaT) {
         this.deltaT = deltaT;
+    }
+
+    public int getCountsPerFrame() {
+        return countsPerFrameReal;
+    }
+
+    double a = Math.pow(10, 0.125);
+    public void setCountsPerFrame(int countsPerFramePlan) {
+//        this.countsPerFramePlan = (int) Math.exp(countsPerFramePlan);
+        if (countsPerFramePlan == 0) {
+            this.countsPerFramePlan = 0;
+        } else {
+            this.countsPerFramePlan = (int) Math.pow(a, countsPerFramePlan);
+        }
+//        this.countsPerFramePlan = countsPerFramePlan;
+    }
+
+    public void updateRealCounts() {
+        synchronized (lock) {
+            countsPerFrameReal = 0;
+            isFinishedCalc = false;
+            lock.notify();
+        }
     }
 }
