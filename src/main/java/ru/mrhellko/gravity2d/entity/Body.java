@@ -1,0 +1,110 @@
+package ru.mrhellko.gravity2d.entity;
+
+public class Body {
+    private double x;
+    private double y;
+    private double vx;
+    private double vy;
+    private double Fx;
+    private double Fy;
+    private double m;
+
+
+    public void setNewValues(double x, double y, double vx, double vy, double Fx, double Fy) {
+        this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+        this.Fx = Fx;
+        this.Fy = Fy;
+    }
+
+    public double signX(Body other) {
+        if(other.x > x) return 1.0;
+        else return -1.0;
+    }
+
+    public double signY(Body other) {
+        if(other.y > y) return 1.0;
+        else return -1.0;
+    }
+
+    public double getFx() {
+        return Fx;
+    }
+
+    public void setFx(double fx) {
+        Fx = fx;
+    }
+
+    public double getFy() {
+        return Fy;
+    }
+
+    public void setFy(double fy) {
+        Fy = fy;
+    }
+
+    public double deltaX(Body other) {
+        return other.x - x;
+    }
+
+    public double deltaY(Body other) {
+        return other.y - y;
+    }
+
+    public double distanceFrom(Body other) {
+        return Math.sqrt((x - other.x) * (x - other.x) + (y - other.y) * (y - other.y));
+    }
+    public double squareDistanceFrom(Body other) {
+        return (x - other.x) * (x - other.x) + (y - other.y) * (y - other.y);
+    }
+
+    public Body(double x, double y, double vx, double vy, double m) {
+        this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+        this.m = m;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public double getVx() {
+        return vx;
+    }
+
+    public void setVx(double vx) {
+        this.vx = vx;
+    }
+
+    public double getVy() {
+        return vy;
+    }
+
+    public void setVy(double vy) {
+        this.vy = vy;
+    }
+
+    public double getM() {
+        return m;
+    }
+
+    public void setM(double m) {
+        this.m = m;
+    }
+}
