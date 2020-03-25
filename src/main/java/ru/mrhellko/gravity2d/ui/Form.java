@@ -91,6 +91,7 @@ public class Form extends JFrame {
     }
 
     private void render(SpaceCanvas canvas, Viewport viewport, Graphics g) {
+        viewport.updateFollowMode();
         for (Body body : engine.getBodyList()) {
             body.render(canvas, viewport, g);
         }

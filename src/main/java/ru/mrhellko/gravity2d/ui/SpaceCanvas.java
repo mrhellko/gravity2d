@@ -26,10 +26,22 @@ public class SpaceCanvas extends JPanel implements MouseWheelListener {
                 if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2 && !e.isConsumed()) {
                     for(Body body : engine.getBodyList()) {
                         if(isInsideOval(e.getPoint(), body)) {
-                            System.out.println(body.getTitle());
-                            //do something
+                            viewport.setFollowBody(body);
                             break;
                         }
+                    }
+                    e.consume();
+                }
+                if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 1 && !e.isConsumed()) {
+                    boolean isBody = false;
+                    for(Body body : engine.getBodyList()) {
+                        if(isInsideOval(e.getPoint(), body)) {
+                            isBody = true;
+                            break;
+                        }
+                    }
+                    if (!isBody) {
+                        viewport.setFollowBody(null);
                     }
                     e.consume();
                 }

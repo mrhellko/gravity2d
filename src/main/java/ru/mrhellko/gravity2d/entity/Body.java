@@ -17,9 +17,18 @@ public class Body {
     private Color color;
     public static int viewR = 20;
 
-    public void render(SpaceCanvas canvas, Viewport zoom, Graphics graphics) {
+    public void render(SpaceCanvas canvas, Viewport viewport, Graphics graphics) {
         graphics.setColor(color);
-        graphics.fillOval(zoom.getScreenX(x) - viewR/2, zoom.getScreenY(y) - viewR/2, viewR, viewR);
+        int xRender;
+        int yRender;
+        if (this == viewport.getFollowBody()) {
+            xRender = viewport.getCenterScreenX();
+            yRender = viewport.getCenterScreenY();
+        } else {
+            xRender = viewport.getScreenX(x);
+            yRender = viewport.getScreenY(y);
+        }
+        graphics.fillOval(xRender - viewR/2, yRender - viewR/2, viewR, viewR);
     }
 
     public void setNewValues(double x, double y, double vx, double vy, double Fx, double Fy) {
