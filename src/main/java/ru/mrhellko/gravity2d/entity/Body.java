@@ -19,7 +19,7 @@ public class Body {
     public void render(SpaceCanvas canvas, Viewport zoom, Graphics graphics) {
         int R = 20;
         graphics.setColor(color);
-        graphics.fillOval(zoom.getX(x) - R/2, zoom.getY(y) - R/2, R, R);
+        graphics.fillOval(zoom.getScreenX(x) - R/2, zoom.getScreenY(y) - R/2, R, R);
     }
 
     public void setNewValues(double x, double y, double vx, double vy, double Fx, double Fy) {

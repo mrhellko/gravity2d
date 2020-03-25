@@ -13,6 +13,7 @@ public class SpaceCanvas extends JPanel implements MouseWheelListener {
     private Form formController;
     private Viewport viewport;
     private Engine engine;
+    public static final double zoomIndex = 1.1;
 
     SpaceCanvas(Form formController, Viewport viewport, Engine engine) {
         this.formController = formController;
@@ -25,7 +26,6 @@ public class SpaceCanvas extends JPanel implements MouseWheelListener {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         paintGrid(g);
-        g.translate(getWidth() / 2, getHeight() / 2);
         formController.onDrawFrame(this, viewport, g);
         engine.updateRealCounts();
         try {
@@ -50,11 +50,7 @@ public class SpaceCanvas extends JPanel implements MouseWheelListener {
     public void mouseWheelMoved(MouseWheelEvent e) {
         int xPointLocationZoom = e.getX();
         int yPointLocationZoom = e.getY();
-        if (e.getWheelRotation() < 0) {
-            viewport.setZoomFactor(viewport.getZoomFactor() * 2);
-        } else {
-            viewport.setZoomFactor(viewport.getZoomFactor() / 2);
-        }
+        viewport.updateZoom(e.getWheelRotation(), zoomIndex, xPointLocationZoom, yPointLocationZoom);
     }
 
 }

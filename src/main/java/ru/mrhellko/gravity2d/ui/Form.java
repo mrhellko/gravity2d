@@ -26,6 +26,7 @@ public class Form extends JFrame {
     private JLabel countPerFrameLabel;
     private JSlider speedSlider;
     private JSlider precisionSlider;
+    public static final double A_E = 149_597_868_000.0;
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(Form::new);
@@ -67,8 +68,8 @@ public class Form extends JFrame {
     private void initApplication() {
         engine = new Engine();
         engine.addBody(new Body(0, 0, 0, -(5.97E24*29783+(29783-1023.0)*7.3477E22)/1.9885E30, 1.9885E30, "Sun", new Color(255, 0, 0)));
-        engine.addBody(new Body(149_597_868_000.0, 0, 0, 29783, 5.97E24, "Earth", new Color(58, 138, 53)));
-        engine.addBody(new Body(149_597_868_000.0, 384_401_000.0, -1023, 29783, 7.3477E22, "Moon", new Color(58, 123, 234)));
+        engine.addBody(new Body(Form.A_E, 0, 0, 29783, 5.97E24, "Earth", new Color(58, 138, 53)));
+        engine.addBody(new Body(Form.A_E, 384_401_000.0, -1023, 29783, 7.3477E22, "Moon", new Color(58, 123, 234)));
         engine.setDeltaT(1.0 / precisionSlider.getValue());
         double value = speedSlider.getValue() / 1.0 / SLIDER_SCALE;
         engine.setCountsPerFrame((int) value);
