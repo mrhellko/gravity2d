@@ -2,11 +2,11 @@ package ru.mrhellko.gravity2d.ui;
 
 import ru.mrhellko.gravity2d.engine.Engine;
 import ru.mrhellko.gravity2d.engine.Viewport;
+import ru.mrhellko.gravity2d.entity.Body;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.event.*;
 
 
 public class SpaceCanvas extends JPanel implements MouseWheelListener {
@@ -20,6 +20,21 @@ public class SpaceCanvas extends JPanel implements MouseWheelListener {
         this.viewport = viewport;
         this.engine = engine;
         addMouseWheelListener(this);
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2 && !e.isConsumed()) {
+                    for(Body body : engine.getBodyList()) {
+                        if(isInsideOval(e.getPoint(), body)) {
+                            System.out.println(body.getTitle());
+                            //do something
+                            break;
+                        }
+                    }
+                    e.consume();
+                }
+            }
+        });
     }
 
     @Override
@@ -51,4 +66,9 @@ public class SpaceCanvas extends JPanel implements MouseWheelListener {
         viewport.updateZoom(e.getWheelRotation(), zoomIndex, e.getX(), e.getY());
     }
 
+    private boolean isInsideOval(Point point, Body center) {
+        int dx = point.x - viewport.getScreenX(center.getX());
+        int dy = point.y - viewport.getScreenY(center.getY());
+        return (dx * dx + dy * dy <= Body.viewR * Body.viewR);
+    }
 }

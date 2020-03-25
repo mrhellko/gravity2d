@@ -15,11 +15,11 @@ public class Body {
     private double m;
     private String title;
     private Color color;
+    public static int viewR = 20;
 
     public void render(SpaceCanvas canvas, Viewport zoom, Graphics graphics) {
-        int R = 20;
         graphics.setColor(color);
-        graphics.fillOval(zoom.getScreenX(x) - R/2, zoom.getScreenY(y) - R/2, R, R);
+        graphics.fillOval(zoom.getScreenX(x) - viewR/2, zoom.getScreenY(y) - viewR/2, viewR, viewR);
     }
 
     public void setNewValues(double x, double y, double vx, double vy, double Fx, double Fy) {
