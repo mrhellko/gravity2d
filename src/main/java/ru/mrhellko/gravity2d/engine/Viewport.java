@@ -1,13 +1,14 @@
 package ru.mrhellko.gravity2d.engine;
 
 import ru.mrhellko.gravity2d.entity.Body;
+import ru.mrhellko.gravity2d.ui.Form;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 public class Viewport {
-    private double cellX = 149_597_868_000.0;
-    private double cellY = 149_597_868_000.0;
+    private double cellX = Form.A_E;
+    private double cellY = Form.A_E;
 
     private double left = -cellX * 5;
     private double right = cellX * 5;
@@ -16,6 +17,10 @@ public class Viewport {
     private int width = 1200;
     private int height = 800;
     private double zoomFactor = 100;
+    {
+        System.out.println(String.format("left: %s, right: %s, top: %s, down: %s", left, right, top, down));
+
+    }
 
     public double getZoomFactor() {
         return zoomFactor;
@@ -42,23 +47,38 @@ public class Viewport {
     }
 
     public double getRealX(int x) {
-        return (right - left) * x / width;
+        return left + (right - left) * x / width;
     }
 
     public double getRealY(int y) {
-        return (down - top) * y / height;
+        return top + (down - top) * y / height;
     }
 
     public int getScreenX(double x) {
-        return (int) (x / (right - left) * width);
+        return (int) ((x - left) / (right - left) * width);
     }
 
     public int getScreenY(double y) {
-        return (int) (y / (down - top) * height);
+        return (int) ((y - top) / (down - top) * height);
     }
 
     public void zoomIn(int x, int y) {
 
     }
 
+    public void updateZoom(int wheelRotation, double zoomIndex, int xPointLocationZoom, int yPointLocationZoom) {
+        if (wheelRotation < 0) {
+            zoomIndex = 1 / zoomIndex;
+        }
+        double newLeft = zoomIndex * this.left + (1 - zoomIndex) * getRealX(xPointLocationZoom);
+        double newRight = zoomIndex * this.right + (1 - zoomIndex) * getRealX(xPointLocationZoom);
+        double newTop = zoomIndex * this.top + (1 - zoomIndex) * getRealY(yPointLocationZoom);
+        double newDown = zoomIndex * this.down + (1 - zoomIndex) * getRealY(yPointLocationZoom);
+
+        this.left = newLeft;
+        this.right = newRight;
+        this.top = newTop;
+        this.down = newDown;
+        System.out.println(String.format("left: %s, right: %s, top: %s, down: %s", left, right, top, down));
+    }
 }
