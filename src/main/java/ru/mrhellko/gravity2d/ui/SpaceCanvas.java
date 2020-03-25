@@ -38,19 +38,17 @@ public class SpaceCanvas extends JPanel implements MouseWheelListener {
     }
 
     private void paintGrid(Graphics g) {
-        for (int i = - getWidth() / 2; i < getWidth() / 2; i += getWidth() / 10) {
-            g.drawLine(i, - getHeight() / 2, i, getHeight());
+        for (int i = 0; i < getWidth() ; i += getWidth() / 12) {
+            g.drawLine(i, 0, i, getHeight());
         }
-        for (int i = - getHeight() / 2; i < getHeight() / 2; i += getHeight() / 8) {
-            g.drawLine(- getWidth() / 2, i, getWidth(), i);
+        for (int i = 0; i < getHeight() ; i += getHeight() / 8) {
+            g.drawLine(0, i, getWidth(), i);
         }
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        int xPointLocationZoom = e.getX();
-        int yPointLocationZoom = e.getY();
-        viewport.updateZoom(e.getWheelRotation(), zoomIndex, xPointLocationZoom, yPointLocationZoom);
+        viewport.updateZoom(e.getWheelRotation(), zoomIndex, e.getX(), e.getY());
     }
 
 }
