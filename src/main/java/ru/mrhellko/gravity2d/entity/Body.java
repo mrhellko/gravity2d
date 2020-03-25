@@ -1,6 +1,6 @@
 package ru.mrhellko.gravity2d.entity;
 
-import ru.mrhellko.gravity2d.engine.ZoomSettings;
+import ru.mrhellko.gravity2d.engine.Viewport;
 import ru.mrhellko.gravity2d.ui.SpaceCanvas;
 
 import java.awt.*;
@@ -16,7 +16,7 @@ public class Body {
     private String title;
     private Color color;
 
-    public void render(SpaceCanvas canvas, ZoomSettings zoom, Graphics graphics) {
+    public void render(SpaceCanvas canvas, Viewport zoom, Graphics graphics) {
         int R = 20;
         graphics.setColor(color);
         graphics.fillOval(zoom.getX(x) - R/2, zoom.getY(y) - R/2, R, R);

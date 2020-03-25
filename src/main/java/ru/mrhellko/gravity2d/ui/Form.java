@@ -1,13 +1,14 @@
 package ru.mrhellko.gravity2d.ui;
 
 import ru.mrhellko.gravity2d.engine.Engine;
-import ru.mrhellko.gravity2d.engine.ZoomSettings;
+import ru.mrhellko.gravity2d.engine.Viewport;
 import ru.mrhellko.gravity2d.entity.Body;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 
 public class Form extends JFrame {
     private static final int POS_X = 400;
@@ -19,7 +20,7 @@ public class Form extends JFrame {
     public static final int COUNTS_PER_FRAME_MIN = 0;
     public static final int SLIDER_SCALE = 300;
     private Engine engine;
-    private ZoomSettings zoomSettings;
+    private Viewport viewport;
     private JPanel bottomPanel;
     private JLabel timeLabel;
     private JLabel countPerFrameLabel;
@@ -31,7 +32,7 @@ public class Form extends JFrame {
     }
 
     private Form() {
-        zoomSettings = new ZoomSettings();
+        viewport = new Viewport();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(POS_X, POS_Y, WINDOW_WIDTH, WINDOW_HEIGHT);
         bottomPanel = new JPanel();
@@ -50,7 +51,7 @@ public class Form extends JFrame {
         });
 
         initApplication();
-        SpaceCanvas canvas = new SpaceCanvas(this, zoomSettings, engine);
+        SpaceCanvas canvas = new SpaceCanvas(this, viewport, engine);
         add(canvas, BorderLayout.CENTER);
 
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
@@ -75,8 +76,8 @@ public class Form extends JFrame {
         thread.start();
     }
 
-    public void onDrawFrame(SpaceCanvas canvas, ZoomSettings zoomSettings, Graphics g) {
-        render(canvas, zoomSettings, g);
+    public void onDrawFrame(SpaceCanvas canvas, Viewport viewport, Graphics g) {
+        render(canvas, viewport, g);
         double time = engine.getTime();
         timeLabel.setText(String.format("%6d years %03d days %02d hours %02d min %02d sec",
                 (int)(time / 3600 / 24 / 365),
@@ -88,9 +89,9 @@ public class Form extends JFrame {
         countPerFrameLabel.setText(String.format(" Counts per frame: %20d", engine.getCountsPerFrame()));
     }
 
-    private void render(SpaceCanvas canvas, ZoomSettings zoomSettings, Graphics g) {
+    private void render(SpaceCanvas canvas, Viewport viewport, Graphics g) {
         for (Body body : engine.getBodyList()) {
-            body.render(canvas, zoomSettings, g);
+            body.render(canvas, viewport, g);
         }
     }
 }
