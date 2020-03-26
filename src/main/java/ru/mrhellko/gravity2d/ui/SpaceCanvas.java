@@ -81,6 +81,6 @@ public class SpaceCanvas extends JPanel implements MouseWheelListener {
     private boolean isInsideOval(Point point, Body center) {
         int dx = point.x - viewport.getScreenX(center.getX());
         int dy = point.y - viewport.getScreenY(center.getY());
-        return (dx * dx + dy * dy <= Body.viewR * Body.viewR);
+        return (dx * dx + dy * dy <= center.getViewR() * center.getViewR());
     }
 }

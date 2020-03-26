@@ -15,7 +15,7 @@ public class Body {
     private double m;
     private String title;
     private Color color;
-    public static int viewR = 20;
+    private int viewR;
 
     public void render(SpaceCanvas canvas, Viewport viewport, Graphics graphics) {
         graphics.setColor(color);
@@ -71,7 +71,7 @@ public class Body {
         return (x - other.x) * (x - other.x) + (y - other.y) * (y - other.y);
     }
 
-    public Body(double x, double y, double vx, double vy, double m, String title, Color color) {
+    public Body(double x, double y, double vx, double vy, double m, String title, Color color, int viewR) {
         this.x = x;
         this.y = y;
         this.vx = vx;
@@ -79,15 +79,7 @@ public class Body {
         this.m = m;
         this.title = title;
         this.color = color;
-    }
-
-    public Body(double x, double y, double vx, double vy, double m) {
-        this.x = x;
-        this.y = y;
-        this.vx = vx;
-        this.vy = vy;
-        this.m = m;
-        this.title = "";
+        this.viewR = viewR;
     }
 
     public String getTitle() {
@@ -136,5 +128,13 @@ public class Body {
 
     public void setM(double m) {
         this.m = m;
+    }
+
+    public int getViewR() {
+        return viewR;
+    }
+
+    public void setViewR(int viewR) {
+        this.viewR = viewR;
     }
 }
