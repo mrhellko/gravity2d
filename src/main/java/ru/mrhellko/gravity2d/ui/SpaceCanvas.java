@@ -13,7 +13,7 @@ public class SpaceCanvas extends JPanel implements MouseWheelListener {
     private Form formController;
     private Viewport viewport;
     private Engine engine;
-    public static final double zoomIndex = 1.1;
+    private static final double zoomIndex = 1.1;
 
     SpaceCanvas(Form formController, Viewport viewport, Engine engine) {
         this.formController = formController;
@@ -54,6 +54,8 @@ public class SpaceCanvas extends JPanel implements MouseWheelListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, java.awt.RenderingHints.VALUE_ANTIALIAS_ON);
         paintGrid(g);
         formController.onDrawFrame(this, viewport, g);
         engine.updateRealCounts();

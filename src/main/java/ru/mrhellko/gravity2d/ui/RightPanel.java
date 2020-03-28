@@ -1,10 +1,11 @@
 package ru.mrhellko.gravity2d.ui;
 
+import ru.mrhellko.gravity2d.engine.Viewport;
 import ru.mrhellko.gravity2d.entity.Body;
 
 import javax.swing.*;
 
-public class RightPanel extends JPanel {
+class RightPanel extends JPanel {
     private Body body = null;
     private Body prevBody = null;
     private JLabel jLabelHeader = new JLabel();
@@ -17,6 +18,7 @@ public class RightPanel extends JPanel {
     private JLabel jLabelM = new JLabel();
     private JLabel jLabelDistanceTitle = new JLabel();
     private JLabel jLabelDistance = new JLabel();
+    private JLabel jLabelScale = new JLabel();
     private boolean viewDistance = false;
 
     boolean isViewDistance() {
@@ -27,6 +29,7 @@ public class RightPanel extends JPanel {
         jLabelHeader.setText("Free View");
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         this.add(jLabelHeader);
+        this.add(jLabelScale);
         this.add(jLabelTitle);
         this.add(jLabelX);
         this.add(jLabelY);
@@ -51,6 +54,10 @@ public class RightPanel extends JPanel {
         jLabelM.setText("");
         jLabelDistanceTitle.setText("");
         jLabelDistance.setText("");
+    }
+
+    void printScale(Viewport viewport) {
+        jLabelScale.setText(String.format("Cell 100px: %1.4e m", viewport.getRealX(100) - viewport.getRealX(0)));
     }
 
     void setSelected(Body body) {
@@ -78,7 +85,7 @@ public class RightPanel extends JPanel {
     }
 
     void printDistanceBodiesInfo() {
-        jLabelDistanceTitle.setText(String.format("Distance from %s to %s:", prevBody.getTitle(), body.getTitle()));
+        jLabelDistanceTitle.setText(String.format("Distance from %s to %s", prevBody.getTitle(), body.getTitle()));
         jLabelDistance.setText(String.format("d: %1.4e", prevBody.distanceFrom(body)));
     }
 
