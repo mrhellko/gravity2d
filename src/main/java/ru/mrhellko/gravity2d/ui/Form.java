@@ -25,6 +25,7 @@ public class Form extends JFrame {
     private JPanel bottomPanel;
     private JLabel timeLabel;
     private JLabel countPerFrameLabel;
+    private JLabel deltaTLabel;
     private JSlider speedSlider;
     private JSlider precisionSlider;
     public static final double A_E = 149_597_868_000.0;
@@ -40,6 +41,7 @@ public class Form extends JFrame {
         bottomPanel = new JPanel();
         timeLabel = new JLabel();
         countPerFrameLabel = new JLabel();
+        deltaTLabel = new JLabel();
         speedSlider = new JSlider(COUNTS_PER_FRAME_MIN, SLIDER_SCALE * COUNTS_PER_FRAME_MAX);
         speedSlider.addChangeListener(e -> {
             double value = ((JSlider) e.getSource()).getValue() / 1.0 / SLIDER_SCALE;
@@ -64,6 +66,7 @@ public class Form extends JFrame {
         bottomPanel.add(timeLabel);
         bottomPanel.add(countPerFrameLabel);
         bottomPanel.add(speedSlider);
+        bottomPanel.add(deltaTLabel);
         bottomPanel.add(precisionSlider);
         add(bottomPanel, BorderLayout.SOUTH);
         setTitle("Planets");
@@ -129,7 +132,8 @@ public class Form extends JFrame {
                 (int)(time / 60) % 60,
                 (int)(time) % 60
         ));
-        countPerFrameLabel.setText(String.format(" Counts per frame: %20d", engine.getCountsPerFrame()));
+        countPerFrameLabel.setText(String.format(" Calcs per frame: %06d", engine.getCountsPerFrame()));
+        deltaTLabel.setText(String.format("delta T: 1/%.0f s", 1/engine.getDeltaT()));
     }
 
     private void render(SpaceCanvas canvas, Viewport viewport, Graphics g) {
