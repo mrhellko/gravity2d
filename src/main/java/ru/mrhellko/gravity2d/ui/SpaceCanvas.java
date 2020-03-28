@@ -27,6 +27,7 @@ public class SpaceCanvas extends JPanel implements MouseWheelListener {
                     for(Body body : engine.getBodyList()) {
                         if(isInsideOval(e.getPoint(), body)) {
                             viewport.setFollowBody(body);
+                            formController.getRightPanel().setFollowBody(body);
                             break;
                         }
                     }
@@ -37,11 +38,12 @@ public class SpaceCanvas extends JPanel implements MouseWheelListener {
                     for(Body body : engine.getBodyList()) {
                         if(isInsideOval(e.getPoint(), body)) {
                             isBody = true;
+                            formController.getRightPanel().setSelected(body);
                             break;
                         }
                     }
-                    if (!isBody) {
-                        viewport.setFollowBody(null);
+                    if(!isBody) {
+                        formController.getRightPanel().clearSelection();
                     }
                     e.consume();
                 }

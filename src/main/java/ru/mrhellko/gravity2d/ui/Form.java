@@ -6,15 +6,14 @@ import ru.mrhellko.gravity2d.entity.Body;
 import ru.mrhellko.gravity2d.entity.BodyBuilder;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class Form extends JFrame {
     private static final int POS_X = 400;
     private static final int POS_Y = 200;
-    private static final int WINDOW_WIDTH = 1200;
+    private static final int WINDOW_WIDTH = 1400;
     private static final int WINDOW_HEIGHT = 800;
     private static final int DELTA_T_MAX = 20;
     public static final int COUNTS_PER_FRAME_MAX = 45;
@@ -22,6 +21,7 @@ public class Form extends JFrame {
     public static final int SLIDER_SCALE = 300;
     private Engine engine;
     private Viewport viewport;
+    private RightPanel rightPanel;
     private JPanel bottomPanel;
     private JLabel timeLabel;
     private JLabel countPerFrameLabel;
@@ -44,17 +44,21 @@ public class Form extends JFrame {
         speedSlider.addChangeListener(e -> {
             double value = ((JSlider)e.getSource()).getValue() / 1.0 / SLIDER_SCALE;
             engine.setCountsPerFrame((int) value);
+            this.requestFocus();
         });
         precisionSlider = new JSlider(1, DELTA_T_MAX, 1);
-        precisionSlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
-                engine.setDeltaT(1.0 / ((JSlider)e.getSource()).getValue());
-            }
+        precisionSlider.addChangeListener(e -> {
+            engine.setDeltaT(1.0 / ((JSlider) e.getSource()).getValue());
+            this.requestFocus();
         });
 
         initApplication();
         SpaceCanvas canvas = new SpaceCanvas(this, viewport, engine);
         add(canvas, BorderLayout.CENTER);
+        rightPanel = new RightPanel();
+        rightPanel.setBorder(BorderFactory.createBevelBorder(0));
+        rightPanel.setPreferredSize(new Dimension(200, WINDOW_HEIGHT));
+        add(rightPanel, BorderLayout.EAST);
 
         bottomPanel.setLayout(new BoxLayout(bottomPanel, BoxLayout.X_AXIS));
         bottomPanel.add(timeLabel);
@@ -64,6 +68,16 @@ public class Form extends JFrame {
         add(bottomPanel, BorderLayout.SOUTH);
         setTitle("Planets");
         setVisible(true);
+        this.setFocusable(true);
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    getRightPanel().setFollowBody(null);
+                    viewport.setFollowBody(null);
+                }
+            }
+        });
     }
 
     private void initApplication() {
@@ -95,10 +109,12 @@ public class Form extends JFrame {
 
     public void onDrawFrame(SpaceCanvas canvas, Viewport viewport, Graphics g) {
         render(canvas, viewport, g);
+        if(rightPanel.getSelected() != null) rightPanel.printSelectedBodyInfo();
+        if(rightPanel.isViewDistance()) rightPanel.printDistanceBodiesInfo();
         double time = engine.getTime();
         timeLabel.setText(String.format("%6d years %03d days %02d hours %02d min %02d sec",
-                (int)(time / 3600 / 24 / 365),
-                (int)(time / 3600 / 24) % 365,
+                (int)(time / 3600 / 24 / 365.25),
+                (int)(time / 3600 / 24) % 366,
                 (int)(time / 3600) % 24,
                 (int)(time / 60) % 60,
                 (int)(time) % 60
@@ -112,4 +128,9 @@ public class Form extends JFrame {
             body.render(canvas, viewport, g);
         }
     }
+
+    public RightPanel getRightPanel() {
+        return rightPanel;
+    }
+
 }
