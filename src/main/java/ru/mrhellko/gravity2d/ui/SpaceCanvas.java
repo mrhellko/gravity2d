@@ -14,6 +14,8 @@ public class SpaceCanvas extends JPanel implements MouseWheelListener {
     private Viewport viewport;
     private Engine engine;
     private static final double zoomIndex = 1.1;
+    private int pressedX;
+    private int pressedY;
 
     SpaceCanvas(Form formController, Viewport viewport, Engine engine) {
         this.formController = formController;
@@ -47,6 +49,27 @@ public class SpaceCanvas extends JPanel implements MouseWheelListener {
                     }
                     e.consume();
                 }
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                pressedX = 0;
+                pressedY = 0;
+            }
+        });
+        addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (pressedX == 0 && pressedY == 0) {
+                    pressedX = e.getX();
+                    pressedY = e.getY();
+                }
+
+                int diffX = e.getX() - pressedX;
+                int diffY = e.getY() - pressedY;
+                pressedX = e.getX();
+                pressedY = e.getY();
+                viewport.moveBorders(diffX, diffY);
             }
         });
     }

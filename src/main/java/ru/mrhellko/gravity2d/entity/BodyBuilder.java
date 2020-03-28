@@ -3,6 +3,7 @@ package ru.mrhellko.gravity2d.entity;
 import java.awt.*;
 
 public class BodyBuilder {
+    public static final double MIN_TRACE_DISTANCE = 1_000_000 * 1000; //km
     private double x;
     private double y;
     private double vx;
@@ -11,6 +12,7 @@ public class BodyBuilder {
     private String title;
     private Color color;
     private int viewR;
+    private double midDistanceTrace = MIN_TRACE_DISTANCE;
 
     public static BodyBuilder get() {
         return new BodyBuilder();
@@ -56,11 +58,16 @@ public class BodyBuilder {
         return this;
     }
 
+    public BodyBuilder setMidDistanceTrace(double midDistanceTrace) {
+        this.midDistanceTrace = midDistanceTrace;
+        return this;
+    }
+
     public Body build() {
         if(viewR == 0) viewR = 20;
         if(color == null) color = new Color(0, 0, 0);
         if(title == null) title = "";
         if(m <= 0) throw new IllegalArgumentException();
-        return new Body(x, y, vx, vy, m, title, color, viewR);
+        return new Body(x, y, vx, vy, m, title, color, viewR, midDistanceTrace);
     }
 }

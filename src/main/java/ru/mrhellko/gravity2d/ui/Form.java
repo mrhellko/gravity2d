@@ -11,8 +11,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class Form extends JFrame {
-    private static final int POS_X = 400;
-    private static final int POS_Y = 200;
+    private static final int POS_X = 100;
+    private static final int POS_Y = 100;
     private static final int WINDOW_WIDTH = 1416;
     private static final int WINDOW_HEIGHT = 855;
     private static final int DELTA_T_MAX = 20;
@@ -89,7 +89,7 @@ public class Form extends JFrame {
                 .setX(0).setY(0)
                 .setVx(0).setVy(-(5.97E24*29783+(29783-1023.0)*7.3477E22)/1.9885E30)
                 .setM(1.9885E30).setTitle("Sun").setColor(new Color(255, 110, 17))
-                .setViewR(20)
+                .setViewR(20).setMidDistanceTrace(50000)
                 .build()
         );
         engine.addBody(BodyBuilder.get()

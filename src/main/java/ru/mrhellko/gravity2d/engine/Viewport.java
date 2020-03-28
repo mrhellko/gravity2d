@@ -23,6 +23,14 @@ public class Viewport {
         return top + (down - top) * y / height;
     }
 
+    public double getRealDiffX(int x) {
+        return (right - left) * x / width;
+    }
+
+    public double getRealDiffY(int y) {
+        return (down - top) * y / height;
+    }
+
     public int getScreenX(double x) {
         return (int) ((x - left) / (right - left) * width);
     }
@@ -77,5 +85,15 @@ public class Viewport {
 
     public int getCenterScreenY() {
         return height / 2;
+    }
+
+    public void moveBorders(int diffX, int diffY) {
+        if (followBody != null) return;
+        double diffRealX = getRealDiffX(diffX);
+        double diffRealY = getRealDiffY(diffY);
+        this.left -= diffRealX;
+        this.right -= diffRealX;
+        this.top -= diffRealY;
+        this.down -= diffRealY;
     }
 }
