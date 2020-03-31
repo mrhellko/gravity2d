@@ -19,11 +19,29 @@ public class Body extends AbstractBody {
     private Color color;
     private int viewR;
     private double midDistanceTrace;
-    private LinkedList<BodyTrace> traces = new LinkedList<>();
+    private LinkedList<BodyTrace> tracesGlobalMode = new LinkedList<>();
+    private LinkedList<BodyTraceFollowMode> tracesFollowMode = new LinkedList<>();
     private List<Color> colorIndex = new ArrayList<>();
 
+    public Body(double x, double y, double vx, double vy, double m, String title, Color color, int viewR, double midDistanceTrace) {
+        this.x = x;
+        this.y = y;
+        this.vx = vx;
+        this.vy = vy;
+        this.m = m;
+        this.title = title;
+        this.color = color;
+        this.viewR = viewR;
+        this.midDistanceTrace = midDistanceTrace;
+        tracesGlobalMode.add(new BodyTrace(x, y, color));
+        createColorIndex();
+    }
+
     public void render(SpaceCanvas canvas, Viewport viewport, Graphics graphics) {
-        processTrace();
+        //Пересчитаем списки со следами
+        processTrace(viewport);
+
+        //Нарисуем само тело
         graphics.setColor(color);
         int xRender;
         int yRender;
@@ -36,31 +54,58 @@ public class Body extends AbstractBody {
         }
         graphics.fillOval(xRender - viewR/2, yRender - viewR/2, viewR, viewR);
 
-        for (int i = 0; i < traces.size(); i++) {
-            BodyTrace tracePrev = null;
-            if (i > 0) {
-                tracePrev = traces.get(i-1);
+        //отрисуем следы
+        Body followBody = viewport.getFollowBody();
+        if (followBody != this) {
+            List<? extends BodyTrace> traces = followBody == null ? tracesGlobalMode : tracesFollowMode;
+            for (int i = 0; i < traces.size(); i++) {
+                BodyTrace tracePrev = null;
+                if (i > 0) {
+                    tracePrev = traces.get(i - 1);
+                }
+                BodyTrace trace = traces.get(i);
+                trace.setColor(colorIndex.get(i * TRACE_MAX_SIZE / traces.size()));
+                trace.render(viewport, graphics, tracePrev);
             }
-            BodyTrace trace = traces.get(i);
-            trace.setColor(colorIndex.get(i));
-            trace.render(viewport, graphics, tracePrev);
+
+            //соединим последний след с телом линией
+            BodyTrace lastTrace = traces.get(traces.size() - 1);
+            int xLastTraceRender = lastTrace.getScreenX(viewport);
+            int yLastTraceRender = lastTrace.getScreenY(viewport);
+            graphics.drawLine(xRender, yRender, xLastTraceRender, yLastTraceRender);
         }
-        BodyTrace lastTrace = traces.get(traces.size()-1);
-        int xLastTraceRender = viewport.getScreenX(lastTrace.getX());
-        int yLastTraceRender = viewport.getScreenY(lastTrace.getY());
-        graphics.drawLine(xRender, yRender, xLastTraceRender, yLastTraceRender);
     }
 
-    private void processTrace() {
-        BodyTrace lastTrace = traces.get(traces.size()-1);
+    private void processTrace(Viewport viewport) {
+        if (checkAddTraceGlobalMode()) {
+            tracesGlobalMode.add(new BodyTrace(x, y, color));
+        }
+        if (tracesGlobalMode.size() == TRACE_MAX_SIZE) {
+            tracesGlobalMode.remove();
+        }
+
+        if(checkAddTraceFollowMode(viewport)) {
+            tracesFollowMode.add(new BodyTraceFollowMode(viewport.getScreenX(x), viewport.getScreenY(y), color));
+        }
+        if (tracesFollowMode.size() == TRACE_MAX_SIZE) {
+            tracesFollowMode.remove();
+        }
+    }
+
+    private boolean checkAddTraceGlobalMode() {
+        BodyTrace lastTrace = tracesGlobalMode.get(tracesGlobalMode.size()-1);
 //        int dist = firstTrace.squareDistanceFromOnScreen(this, viewport);
         double realDist = lastTrace.distanceFrom(this);
-        if (realDist >= midDistanceTrace) {
-            traces.add(new BodyTrace(x, y, color));
-        }
-        if (traces.size() == TRACE_MAX_SIZE) {
-            traces.remove();
-        }
+        return realDist >= midDistanceTrace;
+    }
+
+    private boolean checkAddTraceFollowMode(Viewport viewport) {
+        Body followBody = viewport.getFollowBody();
+        if (followBody == null || followBody == this) return false;
+        if (tracesFollowMode.size() == 0) return true;
+        BodyTraceFollowMode lastTrace = tracesFollowMode.get(tracesFollowMode.size()-1);
+        double screenDist = lastTrace.squareDistanceScreenFrom(this, viewport);
+        return screenDist >= BodyTrace.MIN_TRACE_DISTANCE_PX_SQR;
     }
 
     public void setNewValues(double x, double y, double vx, double vy, double Fx, double Fy) {
@@ -96,20 +141,6 @@ public class Body extends AbstractBody {
         return other.y - y;
     }
 
-    public Body(double x, double y, double vx, double vy, double m, String title, Color color, int viewR, double midDistanceTrace) {
-        this.x = x;
-        this.y = y;
-        this.vx = vx;
-        this.vy = vy;
-        this.m = m;
-        this.title = title;
-        this.color = color;
-        this.viewR = viewR;
-        this.midDistanceTrace = midDistanceTrace;
-        traces.add(new BodyTrace(x, y, color));
-        createColorIndex();
-    }
-
     private void createColorIndex() {
         int r = color.getRed();
         int g = color.getGreen();
@@ -118,6 +149,14 @@ public class Body extends AbstractBody {
             int a = 255 * i * i / TRACE_MAX_SIZE / TRACE_MAX_SIZE;
             Color tmpColor = new Color(r, g, b, a);
             colorIndex.add(tmpColor);
+        }
+    }
+
+    public void updateZoom(int wheelRotation, double zoomIndex, int xPointLocationZoom, int yPointLocationZoom, Viewport viewport) {
+        Body followBody = viewport.getFollowBody();
+        if (followBody == null || followBody == this) return;
+        for (BodyTraceFollowMode trace : tracesFollowMode) {
+            trace.updateZoom(wheelRotation, zoomIndex, xPointLocationZoom, yPointLocationZoom, viewport);
         }
     }
 
@@ -159,5 +198,9 @@ public class Body extends AbstractBody {
 
     public void setViewR(int viewR) {
         this.viewR = viewR;
+    }
+
+    public void onUpdateFollowBody(Body followBody) {
+        tracesFollowMode.clear();
     }
 }

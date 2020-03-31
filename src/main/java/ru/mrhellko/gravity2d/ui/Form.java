@@ -78,6 +78,7 @@ public class Form extends JFrame {
                 if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     getRightPanel().setFollowBody(null);
                     viewport.setFollowBody(null);
+                    engine.onUpdateFollowBody(null);
                 }
             }
         });

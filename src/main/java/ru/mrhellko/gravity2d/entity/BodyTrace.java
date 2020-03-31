@@ -4,11 +4,13 @@ import ru.mrhellko.gravity2d.engine.Viewport;
 
 import java.awt.*;
 
-public class BodyTrace extends AbstractBody {
+public class BodyTrace extends AbstractBody{
 
-    private Color color;
-    public static final int viewR = 4;
-    public static final int MIN_TRACE_DISTANCE_PX_SQR = 5 * 5;
+    protected Color color;
+
+    public BodyTrace() {
+
+    }
 
     public BodyTrace(double x, double y, Color color) {
         this.x = x;
@@ -22,15 +24,22 @@ public class BodyTrace extends AbstractBody {
 
     public void render(Viewport viewport, Graphics graphics, BodyTrace tracePrev) {
         graphics.setColor(color);
-        int xRender = viewport.getScreenX(x);
-        int yRender = viewport.getScreenY(y);
-        graphics.fillOval(xRender - viewR/2, yRender - viewR/2, viewR, viewR);
+        int xRender = getScreenX(viewport);
+        int yRender = getScreenY(viewport);
+        graphics.fillOval(xRender - VIEW_R_BODY_TRACE /2, yRender - VIEW_R_BODY_TRACE /2, VIEW_R_BODY_TRACE, VIEW_R_BODY_TRACE);
 
         if (tracePrev != null) {
-            int xRenderPrev = viewport.getScreenX(tracePrev.getX());
-            int yRenderPrev = viewport.getScreenY(tracePrev.getY());
+            int xRenderPrev = tracePrev.getScreenX(viewport);
+            int yRenderPrev = tracePrev.getScreenY(viewport);
             graphics.drawLine(xRender, yRender, xRenderPrev, yRenderPrev);
         }
     }
 
+    public int getScreenX(Viewport viewport) {
+        return viewport.getScreenX(x);
+    }
+
+    public int getScreenY(Viewport viewport) {
+        return viewport.getScreenY(y);
+    }
 }

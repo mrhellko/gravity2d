@@ -108,4 +108,16 @@ public class Engine implements Runnable {
             lock.notify();
         }
     }
+
+    public void updateZoom(int wheelRotation, double zoomIndex, int xPointLocationZoom, int yPointLocationZoom, Viewport viewport) {
+        for (Body body : bodyList) {
+            body.updateZoom(wheelRotation, zoomIndex, xPointLocationZoom, yPointLocationZoom, viewport);
+        }
+    }
+
+    public void onUpdateFollowBody(Body followBody) {
+        for (Body body : bodyList) {
+            body.onUpdateFollowBody(followBody);
+        }
+    }
 }

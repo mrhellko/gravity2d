@@ -1,6 +1,8 @@
 package ru.mrhellko.gravity2d.entity;
 
 public abstract class AbstractBody {
+    public static final int VIEW_R_BODY_TRACE = 4;
+    public static final int MIN_TRACE_DISTANCE_PX_SQR = 5 * 5;
     protected double x;
     protected double y;
 
