@@ -88,7 +88,7 @@ public class Form extends JFrame {
         engine = new Engine();
         engine.addBody(BodyBuilder.get()
                 .setX(0).setY(0)
-                .setVx(0).setVy(-(5.97E24*29783+(29783-1023.0)*7.3477E22)/1.9885E30)
+                .setVx(0).setVy(-(5.97E24*29783+(29783-1023.0)*7.3477E22+24133*6.4171E23)/1.9885E30)
                 .setM(1.9885E30).setTitle("Sun").setColor(new Color(255, 110, 17))
                 .setViewR(20).setMidDistanceTrace(50000)
                 .build()
